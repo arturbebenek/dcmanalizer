@@ -1,41 +1,56 @@
-# authors : Guillaume Lemaitre <g.lemaitre58@gmail.com>
-# license : MIT
-
-import matplotlib.pyplot as plt
-import pydicom
-from pydicom.data import get_testdata_files
-
-print(__doc__)
-
-filename = get_testdata_files('CT_small.dcm')[0]
-dataset = pydicom.dcmread(filename)
+import vtk
+from vtk.util import numpy_support
+import os
+import numpy
+from matplotlib import pyplot, cm
 
 
 
-# Normal mode:
-print()
-print("Filename.........:", filename)
-print("Storage type.....:", dataset.SOPClassUID)
-print()
+PathDicom = "F:/MRI Brain Scan/Series 8/"
+reader = vtk.vtkDICOMImageReader()
+reader.SetDirectoryName(PathDicom)
+reader.Update()
 
-pat_name = dataset.PatientName
-display_name = pat_name.family_name + ", " + pat_name.given_name
-print("Patient's name...:", display_name)
-print("Patient id.......:", dataset.PatientID)
-print("Modality.........:", dataset.Modality)
-print("Study Date.......:", dataset.StudyDate)
+# Load dimensions using `GetDataExtent`
+_extent = reader.GetDataExtent()
+ConstPixelDims = [_extent[1]-_extent[0]+1, _extent[3]-_extent[2]+1, _extent[5]-_extent[4]+1]
 
-if 'PixelData' in dataset:
-    rows = int(dataset.Rows)
-    cols = int(dataset.Columns)
-    print("Image size.......: {rows:d} x {cols:d}, {size:d} bytes".format(
-        rows=rows, cols=cols, size=len(dataset.PixelData)))
-    if 'PixelSpacing' in dataset:
-        print("Pixel spacing....:", dataset.PixelSpacing)
+# Load spacing values
+ConstPixelSpacing = reader.GetPixelSpacing()
 
-# use .get() if not sure the item exists, and want a default value if missing
-print("Slice location...:", dataset.get('SliceLocation', "(missing)"))
+x = numpy.arange(0.0, (ConstPixelDims[0]+1)*ConstPixelSpacing[0], ConstPixelSpacing[0])
+y = numpy.arange(0.0, (ConstPixelDims[1]+1)*ConstPixelSpacing[1], ConstPixelSpacing[1])
+z = numpy.arange(0.0, (ConstPixelDims[2]+1)*ConstPixelSpacing[2], ConstPixelSpacing[2])
 
-# plot the image using matplotlib
-plt.imshow(dataset.pixel_array, cmap=plt.cm.bone)
-plt.show()
+# Get the 'vtkImageData' object from the reader
+imageData = reader.GetOutput()
+# Get the 'vtkPointData' object from the 'vtkImageData' object
+pointData = imageData.GetPointData()
+# Ensure that only one array exists within the 'vtkPointData' object
+assert (pointData.GetNumberOfArrays()==1)
+# Get the `vtkArray` (or whatever derived type) which is needed for the `numpy_support.vtk_to_numpy` function
+arrayData = pointData.GetArray(0)
+
+
+#vtk usage
+nimage =
+
+
+
+# Convert the `vtkArray` to a NumPy array
+ArrayDicom = numpy_support.vtk_to_numpy(arrayData)
+# Reshape the NumPy array to 3D using 'ConstPixelDims' as a 'shape'
+ArrayDicom = ArrayDicom.reshape(ConstPixelDims, order='F')
+
+
+pyplot.axes().set_aspect('equal', 'datalim')
+pyplot.set_cmap(pyplot.gray())
+fig1 = pyplot.pcolormesh(x, y, numpy.flipud(numpy.rot90(ArrayDicom[:, :, 30])))
+pyplot.show(fig1)
+
+
+pyplot.axes().set_aspect('equal', 'datalim')
+pyplot.set_cmap(pyplot.gray())
+fig2 = pyplot.pcolormesh(x, z, numpy.flipud(numpy.rot90(ArrayDicom[:, 30, :])))
+pyplot.show(fig2)
+
