@@ -1,6 +1,6 @@
 
 import numpy as np
-import dicom
+import pydicom
 import os
 import matplotlib.pyplot as plt
 from glob import glob
@@ -13,16 +13,16 @@ from sklearn.cluster import KMeans
 from plotly import __version__
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 from plotly.tools import FigureFactory as FF
-from plotly.graph_objs import *
+import plotly.graph_objs
 init_notebook_mode(connected=True)
 
-data_path = "/data/LungCancer-data/stage1/train/cancer/5267ea7baf6332f29163064aecf6e443/"
-output_path = working_path = "/home/howard/Documents/"
+data_path = "C:/Users/Art/Documents/studia/inzynierka/MRI Brain Scan/Series 8"
+output_path = working_path = "C:/Users/Art/Documents/python/dcmanalizer/dicomreader"
 g = glob(data_path + '/*.dcm')
 
 # Print out the first 5 file names to verify we're in the right folder.
 print ("Total of %d DICOM images.\nFirst 5 filenames:" % len(g))
-print ('\n'.join(g[:5])
+print ('\n'.join(g[:5]))
 
 
 #
@@ -100,8 +100,8 @@ sample_stack(imgs_to_process)
 
 
 #resampling
-print "Slice Thickness: %f" % patient[0].SliceThickness
-print "Pixel Spacing (row, col): (%f, %f) " % (patient[0].PixelSpacing[0], patient[0].PixelSpacing[1])
+print ("Slice Thickness: %f" % patient[0].SliceThickness)
+print ("Pixel Spacing (row, col): (%f, %f) " % (patient[0].PixelSpacing[0], patient[0].PixelSpacing[1]))
 id = 0
 imgs_to_process = np.load(output_path + 'fullimages_{}.npy'.format(id))
 

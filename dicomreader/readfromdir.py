@@ -33,7 +33,7 @@ arrayData = pointData.GetArray(0)
 
 
 #vtk usage
-nimage =
+
 
 
 

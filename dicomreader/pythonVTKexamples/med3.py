@@ -20,7 +20,7 @@ iren.SetRenderWindow(renWin)
 v16 = vtk.vtkVolume16Reader()
 v16.SetDataDimensions(64, 64)
 v16.SetDataByteOrderToLittleEndian()
-v16.SetFilePrefix(VTK_DATA_ROOT + "/Data/headsq/quarter")
+v16.SetFilePrefix(VTK_DATA_ROOT + "F:/MRI Brain Scan/Series 8")
 v16.SetImageRange(1, 93)
 v16.SetDataSpacing(3.2, 3.2, 1.5)
 
