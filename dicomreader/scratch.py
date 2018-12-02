@@ -1,9 +1,40 @@
 import vtk
-from vtk.util.misc import vtkGetDataRoot
-VTK_DATA_ROOT = vtkGetDataRoot()
+import pydicom
+
+import glob
+
 
 # Start by loading some data.
 PathDicom = "F:/MRI Brain Scan/Series 8/"
+
+def DicomInfo(pathDicom):
+    filelist = glob.glob(pathDicom + "*.dcm")
+    filename = filelist[0]
+    dataset = pydicom.dcmread(filename)
+
+    # Normal mode:
+    print()
+    print("Filename.........:", filename)
+    print("Storage type.....:", dataset.SOPClassUID)
+    print()
+
+    pat_name = dataset.PatientName
+    display_name = pat_name.family_name + ", " + pat_name.given_name
+    print("Patient's name...:", display_name)
+    print("Patient id.......:", dataset.PatientID)
+    print("Modality.........:", dataset.Modality)
+    print("Study Date.......:", dataset.StudyDate)
+
+    if 'PixelData' in dataset:
+        rows = int(dataset.Rows)
+        cols = int(dataset.Columns)
+        print("Image size.......: {rows:d} x {cols:d}, {size:d} bytes".format(
+            rows=rows, cols=cols, size=len(dataset.PixelData)))
+    if 'PixelSpacing' in dataset:
+        print("Pixel spacing....:", dataset.PixelSpacing)
+
+
+#add to vtk
 reader = vtk.vtkDICOMImageReader()
 reader.SetDirectoryName(PathDicom)
 reader.SetDataExtent(0, 63, 0, 63, 1, 93)
@@ -51,12 +82,12 @@ oblique.DeepCopy((1, 0, 0, center[0],
 reslice = vtk.vtkImageReslice()
 reslice.SetInputConnection(reader.GetOutputPort())
 reslice.SetOutputDimensionality(2)
-reslice.SetResliceAxes(sagittal)
+reslice.SetResliceAxes(coronal)
 reslice.SetInterpolationModeToLinear()
 
 # Create a greyscale lookup table
 table = vtk.vtkLookupTable()
-table.SetRange(0, 2000) # image intensity range
+table.SetRange(0, 200) # image intensity range
 table.SetValueRange(0.0, 1.0) # from black to white
 table.SetSaturationRange(0.0, 0.0) # no color saturation
 table.SetRampToLinear()
@@ -115,6 +146,11 @@ def MouseMoveCallback(obj, event):
 interactorStyle.AddObserver("MouseMoveEvent", MouseMoveCallback)
 interactorStyle.AddObserver("LeftButtonPressEvent", ButtonCallback)
 interactorStyle.AddObserver("LeftButtonReleaseEvent", ButtonCallback)
+
+
+
+#info show
+DicomInfo(PathDicom)
 
 # Start interaction
 interactor.Start()

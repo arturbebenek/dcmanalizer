@@ -6,15 +6,15 @@ import matplotlib.pyplot as plt
 from glob import glob
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import scipy.ndimage
-from skimage import morphology
-from skimage import measure
-from skimage.transform import resize
-from sklearn.cluster import KMeans
-from plotly import __version__
-from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
-from plotly.tools import FigureFactory as FF
-import plotly.graph_objs
-init_notebook_mode(connected=True)
+#from skimage import morphology
+#from skimage import measure
+#from skimage.transform import resize
+#from sklearn.cluster import KMeans
+#from plotly import __version__
+#from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
+#from plotly.tools import FigureFactory as FF
+#import plotly.graph_objs
+#init_notebook_mode(connected=True)
 
 data_path = "C:/Users/Art/Documents/studia/inzynierka/MRI Brain Scan/Series 8"
 output_path = working_path = "C:/Users/Art/Documents/python/dcmanalizer/dicomreader"
