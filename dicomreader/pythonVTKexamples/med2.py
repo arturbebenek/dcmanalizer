@@ -17,12 +17,23 @@ iren.SetRenderWindow(renWin)
 # usese the FilePrefix in combination with the slice number to construct
 # filenames using the format FilePrefix.%d. (In this case the FilePrefix
 # is the root name of the file: quarter.)
-v16 = vtk.vtkVolume16Reader()
-v16.SetDataDimensions(64, 64)
-v16.SetDataByteOrderToLittleEndian()
-v16.SetFilePrefix(VTK_DATA_ROOT + "/Data/headsq/quarter")
-v16.SetImageRange(1, 93)
+#v16 = vtk.vtkVolume16Reader()
+#v16.SetDataDimensions(64, 64)
+#v16.SetDataByteOrderToLittleEndian()
+#v16.SetFilePrefix(VTK_DATA_ROOT + "/Data/headsq/quarter")
+#v16.SetImageRange(1, 93)
+#v16.SetDataSpacing(3.2, 3.2, 1.5)
+
+PathDicom = "C:/Users/Art/Documents/python/dcmanalizer/prep_data/"
+v16 = vtk.vtkDICOMImageReader()
+v16.SetDirectoryName(PathDicom)
 v16.SetDataSpacing(3.2, 3.2, 1.5)
+v16.SetDataOrigin(0.0, 0.0, 0.0)
+v16.SetDataExtent(0, 63, 0, 63, 2, 61)
+v16.UpdateWholeExtent()
+
+
+
 
 # An isosurface, or contour value of 500 is known to correspond to the
 # skin of the patient. Once generated, a vtkPolyDataNormals filter is

@@ -21,19 +21,33 @@ iren.SetRenderWindow(renWin)
 # usese the FilePrefix in combination with the slice number to construct
 # filenames using the format FilePrefix.%d. (In this case the FilePrefix
 # is the root name of the file: quarter.)
-v16 = vtk.vtkVolume16Reader()
-v16.SetDataDimensions(64, 64)
-v16.SetImageRange(1, 93)
-v16.SetDataByteOrderToLittleEndian()
-v16.SetFilePrefix(VTK_DATA_ROOT )
-v16.SetDataSpacing(3.2, 3.2, 1.5)
+#v16 = vtk.vtkVolume16Reader()
+#v16.SetDataDimensions(64, 64)
+#v16.SetImageRange(1, 93)
+#v16.SetDataByteOrderToLittleEndian()
+#v16.SetFilePrefix(VTK_DATA_ROOT )
+#v16.SetDataSpacing(3.2, 3.2, 1.5)
+
+
+
+PathDicom = "C:/Users/Art/Documents/python/dcmanalizer/prep_data/"
+
+reader = vtk.vtkDICOMImageReader()
+reader.SetDirectoryName(PathDicom)
+reader.SetDataExtent(0, 63, 0, 63, 2, 61)
+reader.SetDataSpacing(3.2, 3.2, 1.5)
+reader.SetDataOrigin(0.0, 0.0, 0.0)
+reader.SetDataScalarTypeToUnsignedShort()
+reader.UpdateWholeExtent()
 
 # The volume will be displayed by ray-cast alpha compositing.
 # A ray-cast mapper is needed to do the ray-casting, and a
 # compositing function is needed to do the compositing along the ray.
 volumeMapper = vtk.vtkGPUVolumeRayCastMapper()
-volumeMapper.SetInputConnection(v16.GetOutputPort())
+volumeMapper.SetInputConnection(reader.GetOutputPort())
 volumeMapper.SetBlendModeToComposite()
+
+
 
 # The color transfer function maps voxel intensities to colors.
 # It is modality-specific, and often anatomy-specific as well.

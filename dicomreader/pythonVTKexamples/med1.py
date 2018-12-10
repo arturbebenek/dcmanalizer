@@ -3,7 +3,7 @@
 
 import vtk
 from vtk.util.misc import vtkGetDataRoot
-VTK_DATA_ROOT = vtkGetDataRoot()
+
 
 # Create the renderer, the render window, and the interactor. The
 # renderer draws into the render window, the interactor enables mouse-
@@ -23,16 +23,14 @@ iren.SetRenderWindow(renWin)
 
 
 
-PathDicom = "F:/MRI Brain Scan/Series 8/"
+PathDicom = "C:/Users/Art/Documents/python/dcmanalizer/prep_data/"
 v16 = vtk.vtkDICOMImageReader()
 v16.SetDirectoryName(PathDicom)
 v16.SetDataSpacing(3.2, 3.2, 1.5)
 v16.SetDataOrigin(0.0, 0.0, 0.0)
-v16.Update()
+v16.SetDataExtent(0, 63, 0, 63, 2, 61)
+v16.UpdateWholeExtent()
 
-red = vtk.vtkImageViewer2
-red.SetInputData(v16.Ge)
-red.Im
 #v16 = vtk.vtkVolume16Reader()
 #v16.SetDataDimensions(64, 64)
 #v16.SetDataByteOrderToLittleEndian()

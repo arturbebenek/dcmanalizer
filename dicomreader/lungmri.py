@@ -30,7 +30,7 @@ print ('\n'.join(g[:5]))
 #
 
 def load_scan(path):
-    slices = [dicom.read_file(path + '/' + s) for s in os.listdir(path)]
+    slices = [pydicom.read_file(path + '/' + s) for s in os.listdir(path)]
     slices.sort(key=lambda x: int(x.InstanceNumber))
     try:
         slice_thickness = np.abs(slices[0].ImagePositionPatient[2] - slices[1].ImagePositionPatient[2])
@@ -87,7 +87,7 @@ plt.show()
 id = 0
 imgs_to_process = np.load(output_path+'fullimages_{}.npy'.format(id))
 
-def sample_stack(stack, rows=6, cols=6, start_with=10, show_every=3):
+def sample_stack(stack, rows=3, cols=3, start_with=10, show_every=3):
     fig,ax = plt.subplots(rows,cols,figsize=[12,12])
     for i in range(rows*cols):
         ind = start_with + i*show_every

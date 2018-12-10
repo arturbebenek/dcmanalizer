@@ -4,6 +4,7 @@ import pydicom
 import glob
 
 
+
 # Start by loading some data.
 PathDicom = "F:/MRI Brain Scan/Series 8/"
 
@@ -37,11 +38,12 @@ def DicomInfo(pathDicom):
 #add to vtk
 reader = vtk.vtkDICOMImageReader()
 reader.SetDirectoryName(PathDicom)
-reader.SetDataExtent(0, 63, 0, 63, 1, 93)
+reader.SetDataExtent(0, 256, 0, 256, 1, 62)
 reader.SetDataSpacing(3.2, 3.2, 1.5)
 reader.SetDataOrigin(0.0, 0.0, 0.0)
 reader.SetDataScalarTypeToUnsignedShort()
 reader.UpdateWholeExtent()
+
 
 # Calculate the center of the volume
 reader.Update()
@@ -154,3 +156,4 @@ DicomInfo(PathDicom)
 
 # Start interaction
 interactor.Start()
+

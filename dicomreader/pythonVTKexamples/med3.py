@@ -17,12 +17,24 @@ iren.SetRenderWindow(renWin)
 # usese the FilePrefix in combination with the slice number to construct
 # filenames using the format FilePrefix.%d. (In this case the FilePrefix
 # is the root name of the file: quarter.)
-v16 = vtk.vtkVolume16Reader()
-v16.SetDataDimensions(64, 64)
-v16.SetDataByteOrderToLittleEndian()
-v16.SetFilePrefix(VTK_DATA_ROOT + "F:/MRI Brain Scan/Series 8")
-v16.SetImageRange(1, 93)
-v16.SetDataSpacing(3.2, 3.2, 1.5)
+
+
+#v16 = vtk.vtkVolume16Reader()
+#v16.SetDataDimensions(64, 64)
+#v16.SetDataByteOrderToLittleEndian()
+#v16.SetFilePrefix("C:/Users/Art/Documents/python/dcmanalizer/prep_data/")
+#v16.SetImageRange(2, 61)
+#v16.SetDataSpacing(3.2, 3.2, 1.5)
+
+PathDicom = "C:/Users/Art/Documents/python/dcmanalizer/prep_data/"
+
+reader = vtk.vtkDICOMImageReader()
+reader.SetDirectoryName(PathDicom)
+reader.SetDataExtent(0, 63, 0, 63, 2, 61)
+reader.SetDataSpacing(3.2, 3.2, 1.5)
+reader.SetDataOrigin(0.0, 0.0, 0.0)
+reader.SetDataScalarTypeToUnsignedShort()
+reader.UpdateWholeExtent()
 
 # An isosurface, or contour value of 500 is known to correspond to the
 # skin of the patient. Once generated, a vtkPolyDataNormals filter is
@@ -30,7 +42,7 @@ v16.SetDataSpacing(3.2, 3.2, 1.5)
 # The triangle stripper is used to create triangle strips from the
 # isosurface these render much faster on may systems.
 skinExtractor = vtk.vtkContourFilter()
-skinExtractor.SetInputConnection(v16.GetOutputPort())
+skinExtractor.SetInputConnection(reader.GetOutputPort())
 skinExtractor.SetValue(0, 500)
 skinNormals = vtk.vtkPolyDataNormals()
 skinNormals.SetInputConnection(skinExtractor.GetOutputPort())
@@ -52,7 +64,7 @@ skin.GetProperty().SetSpecularPower(20)
 # The triangle stripper is used to create triangle strips from the
 # isosurface these render much faster on may systems.
 boneExtractor = vtk.vtkContourFilter()
-boneExtractor.SetInputConnection(v16.GetOutputPort())
+boneExtractor.SetInputConnection(reader.GetOutputPort())
 boneExtractor.SetValue(0, 1150)
 boneNormals = vtk.vtkPolyDataNormals()
 boneNormals.SetInputConnection(boneExtractor.GetOutputPort())
@@ -68,7 +80,7 @@ bone.GetProperty().SetDiffuseColor(1, 1, .9412)
 
 # An outline provides context around the data.
 outlineData = vtk.vtkOutlineFilter()
-outlineData.SetInputConnection(v16.GetOutputPort())
+outlineData.SetInputConnection(reader.GetOutputPort())
 mapOutline = vtk.vtkPolyDataMapper()
 mapOutline.SetInputConnection(outlineData.GetOutputPort())
 outline = vtk.vtkActor()
@@ -115,29 +127,29 @@ satLut.Build()
 # requests data of this extent and the vtkImageMapToColors only
 # processes a slice of data.
 sagittalColors = vtk.vtkImageMapToColors()
-sagittalColors.SetInputConnection(v16.GetOutputPort())
+sagittalColors.SetInputConnection(reader.GetOutputPort())
 sagittalColors.SetLookupTable(bwLut)
 sagittal = vtk.vtkImageActor()
 sagittal.GetMapper().SetInputConnection(sagittalColors.GetOutputPort())
-sagittal.SetDisplayExtent(32, 32, 0, 63, 0, 92)
+#sagittal.SetDisplayExtent(32, 32, 0, 63, 0, 92)
 
 # Create the second (axial) plane of the three planes. We use the same
 # approach as before except that the extent differs.
 axialColors = vtk.vtkImageMapToColors()
-axialColors.SetInputConnection(v16.GetOutputPort())
+axialColors.SetInputConnection(reader.GetOutputPort())
 axialColors.SetLookupTable(hueLut)
 axial = vtk.vtkImageActor()
 axial.GetMapper().SetInputConnection(axialColors.GetOutputPort())
-axial.SetDisplayExtent(0, 63, 0, 63, 46, 46)
+#axial.SetDisplayExtent(0, 63, 0, 63, 46, 46)
 
 # Create the third (coronal) plane of the three planes. We use the same
 # approach as before except that the extent differs.
 coronalColors = vtk.vtkImageMapToColors()
-coronalColors.SetInputConnection(v16.GetOutputPort())
+coronalColors.SetInputConnection(reader.GetOutputPort())
 coronalColors.SetLookupTable(satLut)
 coronal = vtk.vtkImageActor()
 coronal.GetMapper().SetInputConnection(coronalColors.GetOutputPort())
-coronal.SetDisplayExtent(0, 63, 32, 32, 0, 92)
+#coronal.SetDisplayExtent(0, 63, 32, 32, 0, 92)
 
 # It is convenient to create an initial view of the data. The FocalPoint
 # and Position form a vector direction. Later on (ResetCamera() method)

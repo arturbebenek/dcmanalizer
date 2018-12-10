@@ -39,7 +39,7 @@ for filenameDCM in lstFilesDCM:
 pyplot.figure(dpi=300)
 pyplot.axes().set_aspect('equal', 'datalim')
 pyplot.set_cmap(pyplot.gray())
-ax = pyplot.pcolormesh(x, y, numpy.flipud(ArrayDicom[:, :, 45]))
+ax = pyplot.pcolormesh(x, y, numpy.flipud(ArrayDicom[:, :, 20]))
 
 pyplot.show(ax)
 input("\n\nPress the enter key to exit.")
