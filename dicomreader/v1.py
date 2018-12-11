@@ -80,8 +80,8 @@ class Ui_mainWindow(object):
     def setExistingDirectory(self):
        # options = QtWidgets.QFileDialog.DontResolveSymlinks | QtWidgets.QFileDialog.ShowDirsOnly
         path = str(QtWidgets.QFileDialog.getExistingDirectory(self.centralwidget, "Select Directory"))
-        info.Dicominfo(path)
-        self.directoryLabel.setText("Patient's name:" + info.filename)
+        #info.Dicominfo(path)
+        self.directoryLabel.setText(info.DicInfo(path).patientname + "\n" + info.DicInfo(path).modality)
 
 
 

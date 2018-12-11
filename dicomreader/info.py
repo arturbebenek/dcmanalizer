@@ -2,12 +2,6 @@
 import pydicom
 import glob
 
-# Start by loading some data.
-PathDicom = "F:/MRI Brain Scan/Series 8/"
-filename = "random name"
-modality = "ranfom modality"
-id = "22"
-
 
 
 def Dicominfo(pathDicom):
@@ -36,3 +30,15 @@ def Dicominfo(pathDicom):
     if 'PixelSpacing' in dataset:
         print("Pixel spacing....:", dataset.PixelSpacing)
 
+class DicInfo:
+
+
+    def __init__(self, path):
+        self.path = path
+        self.filelist = glob.glob(path + "/*.dcm")
+        self.filename = self.filelist[0]
+        self.dataset = pydicom.dcmread(self.filename)
+        self.patientname = "Patient's name...: " + str(self.dataset.PatientName)
+        self.patientid = "Patient id.......: " + str(self.dataset.PatientID)
+        self.modality = "Modality.........: " + str(self.dataset.Modality)
+        self.studydate = "Study Date.......: "+ str(self.dataset.StudyDate)
