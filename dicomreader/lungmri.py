@@ -108,9 +108,8 @@ imgs_to_process = np.load(output_path + 'fullimages_{}.npy'.format(id))
 
 def resample(image, scan, new_spacing=[1, 1, 1]):
     # Determine current pixel spacing
-    spacing = map(float, ([scan[0].SliceThickness] + scan[0].PixelSpacing))
+    spacing = map(float, (scan[0].SliceThickness, 0.859375, 0.859375))     # scan[0].PixelSpacing)
     spacing = np.array(list(spacing))
-
     resize_factor = spacing / new_spacing
     new_real_shape = image.shape * resize_factor
     new_shape = np.round(new_real_shape)

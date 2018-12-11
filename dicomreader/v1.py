@@ -9,6 +9,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PySide2 import QtCore, QtGui, QtWidgets
+#from PyQt5 import QtWidgets, QtCore
 import info
 
 
@@ -78,11 +79,11 @@ class Ui_mainWindow(object):
         self.directoryLabel.setText(QtWidgets.QApplication.translate("mainWindow", "Dicom Label", None, -1))
 
     def setExistingDirectory(self):
-       # options = QtWidgets.QFileDialog.DontResolveSymlinks | QtWidgets.QFileDialog.ShowDirsOnly
+        global path
         path = str(QtWidgets.QFileDialog.getExistingDirectory(self.centralwidget, "Select Directory"))
-        #info.Dicominfo(path)
-        self.directoryLabel.setText(info.DicInfo(path).patientname + "\n" + info.DicInfo(path).modality)
-
+        self.directoryLabel.setText(info.DicInfo(path).patientname + "\n" + info.DicInfo(path).patientid
+                                    + "\n" + info.DicInfo(path).modality + "\n" + info.DicInfo(path).studydate
+                                    + "\n" + info.DicInfo(path).pixeldata + "\n" + info.DicInfo(path).pixelspacing)
 
 
 if __name__ == "__main__":
