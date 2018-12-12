@@ -19,11 +19,11 @@ PathDicom = "C:/Users/Art/Documents/python/dcmanalizer/prep_data/"
 
 reader = vtk.vtkDICOMImageReader()
 reader.SetDirectoryName(PathDicom)
-reader.SetDataExtent(0, 255, 0, 255, 2, 61) #0,63
-reader.SetDataSpacing(3.2, 3.2, 1.5)
-reader.SetDataOrigin(0.0, 0.0, 0.0)
-reader.SetDataScalarTypeToUnsignedShort()
-reader.UpdateWholeExtent()
+#reader.SetDataExtent(0, 255, 0, 255, 2, 61) #0,63
+#reader.SetDataSpacing(3.2, 3.2, 1.5)
+#reader.SetDataOrigin(0.0, 0.0, 0.0)
+#reader.SetDataScalarTypeToUnsignedShort()
+#reader.UpdateWholeExtent()
 
 # The volume will be displayed by ray-cast alpha compositing.
 # A ray-cast mapper is needed to do the ray-casting, and a
@@ -33,28 +33,18 @@ volumeMapper = vtk.vtkOpenGLGPUVolumeRayCastMapper()
 volumeMapper.SetInputConnection(reader.GetOutputPort())
 volumeMapper.SetBlendModeToComposite()
 
-
-
 # The color transfer function maps voxel intensities to colors.
 # It is modality-specific, and often anatomy-specific as well.
 # The goal is to one color for flesh (between 500 and 1000)
 # and another color for bone (1150 and over).
 volumeColor = vtk.vtkColorTransferFunction()
-
-# The opacity transfer function is used to control the opacity
-# of different tissue types.
 volumeScalarOpacity = vtk.vtkPiecewiseFunction()
-
-# The gradient opacity function is used to decrease the opacity
-# in the "flat" regions of the volume while maintaining the opacity
-# at the boundaries between tissue types.  The gradient is measured
-# as the amount by which the intensity changes over unit distance.
-# For most medical data, the unit distance is 1mm.
 volumeGradientOpacity = vtk.vtkPiecewiseFunction()
 
-#volume_tfsetup.skinextraction()
-#volume_tfsetup.brxtraction()
-volume_tfsetup.brainextraction()
+#volume_tfsetup.brxtraction(volumeColor,volumeScalarOpacity,volumeGradientOpacity)
+volume_tfsetup.skinextraction(volumeColor,volumeScalarOpacity,volumeGradientOpacity)
+
+
 # The VolumeProperty attaches the color and opacity functions to the
 # volume, and sets other volume properties.  The interpolation should
 # be set to linear to do a high-quality rendering.  The ShadeOn option
@@ -75,6 +65,7 @@ volumeProperty.ShadeOn()
 volumeProperty.SetAmbient(0.5)
 volumeProperty.SetDiffuse(0.3)
 volumeProperty.SetSpecular(0.6)
+
 
 # The vtkVolume is a vtkProp3D (like a vtkActor) and controls the position
 # and orientation of the volume in world coordinates.

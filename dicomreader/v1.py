@@ -11,6 +11,11 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 #from PyQt5 import QtWidgets, QtCore
 import info
+import spatial
+
+
+
+from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 
 class Ui_mainWindow(object):
@@ -24,7 +29,6 @@ class Ui_mainWindow(object):
         self.ReadBtn.setGeometry(QtCore.QRect(70, 30, 81, 31))
         self.ReadBtn.setObjectName("ReadBtn")
         self.ReadBtn.clicked.connect(self.setExistingDirectory)
-
 
         self.widget = QtWidgets.QWidget(self.centralwidget)
         self.widget.setGeometry(QtCore.QRect(220, 50, 521, 421))
@@ -42,6 +46,7 @@ class Ui_mainWindow(object):
         self.GenerateBtn = QtWidgets.QPushButton(self.centralwidget)
         self.GenerateBtn.setGeometry(QtCore.QRect(30, 210, 81, 41))
         self.GenerateBtn.setObjectName("GenerateBtn")
+        self.GenerateBtn.connect(self.generate3d)
 
         self.MultiBtn = QtWidgets.QPushButton(self.centralwidget)
         self.MultiBtn.setGeometry(QtCore.QRect(30, 160, 81, 41))
@@ -85,6 +90,8 @@ class Ui_mainWindow(object):
                                     + "\n" + info.DicInfo(path).modality + "\n" + info.DicInfo(path).studydate
                                     + "\n" + info.DicInfo(path).pixeldata + "\n" + info.DicInfo(path).pixelspacing)
 
+    def generate3d(self):
+        spatial.Model(path)
 
 if __name__ == "__main__":
     import sys

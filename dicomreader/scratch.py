@@ -38,8 +38,8 @@ def DicomInfo(pathDicom):
 #add to vtk
 reader = vtk.vtkDICOMImageReader()
 reader.SetDirectoryName(PathDicom)
-reader.SetDataExtent(0, 256, 0, 256, 1, 62)
-reader.SetDataSpacing(3.2, 3.2, 1.5)
+#reader.SetDataExtent(0, 256, 0, 256, 1, 62)
+#reader.SetDataSpacing(3.2, 3.2, 1.5)
 reader.SetDataOrigin(0.0, 0.0, 0.0)
 reader.SetDataScalarTypeToUnsignedShort()
 reader.UpdateWholeExtent()
