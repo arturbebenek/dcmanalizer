@@ -41,7 +41,7 @@ class skinextraction:
 
         volumeScalarOpacity.AddPoint(0, 0.00)
         volumeScalarOpacity.AddPoint(100, 0.15)
-        volumeScalarOpacity.AddPoint(500,  0.65)
+        volumeScalarOpacity.AddPoint(500,  0.85)
         volumeScalarOpacity.AddPoint(1150, 0.15)
 
         volumeGradientOpacity.AddPoint(0,   0.0)

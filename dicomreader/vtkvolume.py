@@ -41,8 +41,8 @@ volumeColor = vtk.vtkColorTransferFunction()
 volumeScalarOpacity = vtk.vtkPiecewiseFunction()
 volumeGradientOpacity = vtk.vtkPiecewiseFunction()
 
-#volume_tfsetup.brxtraction(volumeColor,volumeScalarOpacity,volumeGradientOpacity)
-volume_tfsetup.skinextraction(volumeColor,volumeScalarOpacity,volumeGradientOpacity)
+volume_tfsetup.brxtraction(volumeColor,volumeScalarOpacity,volumeGradientOpacity)
+#volume_tfsetup.skinextraction(volumeColor,volumeScalarOpacity,volumeGradientOpacity)
 
 
 # The VolumeProperty attaches the color and opacity functions to the

@@ -69,9 +69,9 @@ coronal.DeepCopy((1, 0, 0, center[0],
                   0, 0, 0, 1))
 
 sagittal = vtk.vtkMatrix4x4()
-sagittal.DeepCopy((0, 0,-1, center[0],
-                   1, 0, 0, center[1],
-                   0,-1, 0, center[2],
+sagittal.DeepCopy((0, 0, 1, center[0],
+                   0, 1, 0, center[1],
+                   1, 0, 0, center[2],
                    0, 0, 0, 1))
 
 oblique = vtk.vtkMatrix4x4()
@@ -84,7 +84,7 @@ oblique.DeepCopy((1, 0, 0, center[0],
 reslice = vtk.vtkImageReslice()
 reslice.SetInputConnection(reader.GetOutputPort())
 reslice.SetOutputDimensionality(2)
-reslice.SetResliceAxes(axial)
+reslice.SetResliceAxes(sagittal)
 reslice.SetInterpolationModeToLinear()
 
 # Create a greyscale lookup table

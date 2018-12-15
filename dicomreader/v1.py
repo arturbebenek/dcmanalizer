@@ -12,7 +12,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 #from PyQt5 import QtWidgets, QtCore
 import info
 import spatial
-
+import widgetrand
 
 
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
@@ -26,7 +26,7 @@ class Ui_mainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
 
         self.ReadBtn = QtWidgets.QPushButton(self.centralwidget)
-        self.ReadBtn.setGeometry(QtCore.QRect(70, 30, 81, 31))
+        self.ReadBtn.setGeometry(QtCore.QRect(30, 60, 81, 31))
         self.ReadBtn.setObjectName("ReadBtn")
         self.ReadBtn.clicked.connect(self.setExistingDirectory)
 
@@ -46,7 +46,7 @@ class Ui_mainWindow(object):
         self.GenerateBtn = QtWidgets.QPushButton(self.centralwidget)
         self.GenerateBtn.setGeometry(QtCore.QRect(30, 210, 81, 41))
         self.GenerateBtn.setObjectName("GenerateBtn")
-        self.GenerateBtn.connect(self.generate3d)
+        self.GenerateBtn.clicked.connect(self.generate3d)
 
         self.MultiBtn = QtWidgets.QPushButton(self.centralwidget)
         self.MultiBtn.setGeometry(QtCore.QRect(30, 160, 81, 41))
@@ -60,14 +60,14 @@ class Ui_mainWindow(object):
 
         mainWindow.setCentralWidget(self.centralwidget)
 
-        self.actionSingle = QtWidgets.QAction(mainWindow)
-        self.actionSingle.setObjectName("actionSingle")
+        #self.actionSingle = QtWidgets.QAction(mainWindow)
+        #self.actionSingle.setObjectName("actionSingle")
 
-        self.actionMulti = QtWidgets.QAction(mainWindow)
-        self.actionMulti.setObjectName("actionMulti")
+        #self.actionMulti = QtWidgets.QAction(mainWindow)
+        #self.actionMulti.setObjectName("actionMulti")
 
-        self.action3D = QtWidgets.QAction(mainWindow)
-        self.action3D.setObjectName("action3D")
+        #self.action3D = QtWidgets.QAction(mainWindow)
+        #self.action3D.setObjectName("action3D")
 
         self.retranslateUi(mainWindow)
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
@@ -78,9 +78,9 @@ class Ui_mainWindow(object):
         self.SingleBtn.setText(QtWidgets.QApplication.translate("mainWindow", "Single View", None, -1))
         self.GenerateBtn.setText(QtWidgets.QApplication.translate("mainWindow", "Generate 3D", None, -1))
         self.MultiBtn.setText(QtWidgets.QApplication.translate("mainWindow", "Multi View", None, -1))
-        self.actionSingle.setText(QtWidgets.QApplication.translate("mainWindow", "Single", None, -1))
-        self.actionMulti.setText(QtWidgets.QApplication.translate("mainWindow", "Multi", None, -1))
-        self.action3D.setText(QtWidgets.QApplication.translate("mainWindow", "3D", None, -1))
+        #self.actionSingle.setText(QtWidgets.QApplication.translate("mainWindow", "Single", None, -1))
+        #self.actionMulti.setText(QtWidgets.QApplication.translate("mainWindow", "Multi", None, -1))
+        #self.action3D.setText(QtWidgets.QApplication.translate("mainWindow", "3D", None, -1))
         self.directoryLabel.setText(QtWidgets.QApplication.translate("mainWindow", "Dicom Label", None, -1))
 
     def setExistingDirectory(self):
@@ -91,7 +91,8 @@ class Ui_mainWindow(object):
                                     + "\n" + info.DicInfo(path).pixeldata + "\n" + info.DicInfo(path).pixelspacing)
 
     def generate3d(self):
-        spatial.Model(path)
+        self.projection = spatial.Model(path)
+  #      self.blblb = widgetrand.MainWindow()
 
 if __name__ == "__main__":
     import sys
