@@ -10,6 +10,7 @@
 
 from PySide2 import QtCore, QtGui, QtWidgets
 #from PyQt5 import QtWidgets, QtCore
+import vtk
 import info
 import spatial
 import singleView
@@ -21,14 +22,17 @@ from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 class Ui_mainWindow(object):
     def setupUi(self, mainWindow):
         mainWindow.setObjectName("mainWindow")
-        mainWindow.resize(800, 600)
+        mainWindow.resize(1000, 600)
         p = mainWindow.palette()
         p.setColor(mainWindow.backgroundRole(), 'gray')
         mainWindow.setPalette(p)
         mainWindow.autoFillBackground()
 
+
+
         self.centralwidget = QtWidgets.QWidget(mainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
 
         self.ReadBtn = QtWidgets.QPushButton(self.centralwidget)
         self.ReadBtn.setGeometry(QtCore.QRect(30, 60, 81, 31))
@@ -38,6 +42,12 @@ class Ui_mainWindow(object):
         self.widget = QtWidgets.QWidget(self.centralwidget)
         self.widget.setGeometry(QtCore.QRect(220, 50, 521, 421))
         self.widget.setObjectName("widget")
+        p = self.widget.palette()
+        p.setColor(self.widget.backgroundRole(), 'red')
+        self.widget.setPalette(p)
+        self.widget.autoFillBackground()
+
+
 
         self.horizontalSlider = QtWidgets.QSlider(self.centralwidget)
         self.horizontalSlider.setGeometry(QtCore.QRect(220, 520, 160, 22))
@@ -65,7 +75,7 @@ class Ui_mainWindow(object):
         self.directoryLabel.setObjectName("DicomLabel")
 
         mainWindow.setCentralWidget(self.centralwidget)
-
+        #mainWindow.setMenuWidget(self.widget)
         #self.actionSingle = QtWidgets.QAction(mainWindow)
         #self.actionSingle.setObjectName("actionSingle")
 
@@ -102,11 +112,30 @@ class Ui_mainWindow(object):
 
 
     def singlelook(self):
-#        self.widget.
-        p = self.widget.palette()
-        p.setColor(self.widget.backgroundRole(), 'red')
-        self.widget.setPalette(p)
-        self.widget.autoFillBackground()
+        self.single = QtWidgets.QWidget(self.widget)
+        self.single.setGeometry(QtCore.QRect(220, 50, 521, 421))
+        self.ren = vtk.vtkRenderer()
+        self.single.GetRenderWindow().AddRenderer(self.ren)
+        self.iren = self.single.GetRenderWindow().GetInteractor()
+
+        # Create source
+        source = vtk.vtkSphereSource()
+        source.SetCenter(0, 0, 0)
+        source.SetRadius(5.0)
+
+        # Create a mapper
+        mapper = vtk.vtkPolyDataMapper()
+        mapper.SetInputConnection(source.GetOutputPort())
+
+        # Create an actor
+        actor = vtk.vtkActor()
+        actor.SetMapper(mapper)
+
+        self.ren.AddActor(actor)
+
+        self.ren.ResetCamera()
+        self.iren.Initialize()
+        self.iren.Start()
 
 if __name__ == "__main__":
     import sys
