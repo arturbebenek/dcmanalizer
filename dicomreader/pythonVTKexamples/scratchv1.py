@@ -32,6 +32,10 @@ class Ui_mainWindow(object):
 
         self.centralwidget = QtWidgets.QWidget(mainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        z = self.centralwidget.palette()
+        z.setColor(self.centralwidget.backgroundRole(), 'red')
+        self.centralwidget.setPalette(z)
+        self.centralwidget.autoFillBackground()
 
 
         self.ReadBtn = QtWidgets.QPushButton(self.centralwidget)
@@ -46,7 +50,7 @@ class Ui_mainWindow(object):
         p.setColor(self.widget.backgroundRole(), 'red')
         self.widget.setPalette(p)
         self.widget.autoFillBackground()
-
+        #mainWindow.addDockWidget(mainWindow, self.widget)
 
 
         self.horizontalSlider = QtWidgets.QSlider(self.centralwidget)
@@ -136,7 +140,7 @@ class Ui_mainWindow(object):
         self.ren.ResetCamera()
         self.iren.Initialize()
         self.iren.Start()
-
+        mainWindow.setCentralWidget(self.centralwidget)
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)

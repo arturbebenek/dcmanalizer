@@ -30,6 +30,7 @@ class Ui_mainWindow(object):
         self.centralwidget = QtWidgets.QWidget(mainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
+
         self.ReadBtn = QtWidgets.QPushButton(self.centralwidget)
         self.ReadBtn.setGeometry(QtCore.QRect(30, 60, 81, 31))
         self.ReadBtn.setObjectName("ReadBtn")
@@ -38,6 +39,7 @@ class Ui_mainWindow(object):
         self.widget = QtWidgets.QWidget(self.centralwidget)
         self.widget.setGeometry(QtCore.QRect(220, 50, 521, 421))
         self.widget.setObjectName("widget")
+
 
         self.horizontalSlider = QtWidgets.QSlider(self.centralwidget)
         self.horizontalSlider.setGeometry(QtCore.QRect(220, 520, 160, 22))
