@@ -8,15 +8,11 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtWidgets
 #from PyQt5 import QtWidgets, QtCore
 import vtk
 import info
 import spatial
-import singleView
-
-
-from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 
 class Ui_mainWindow(object):

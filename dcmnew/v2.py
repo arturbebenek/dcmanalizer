@@ -4,7 +4,7 @@ import vtk
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from PyQt5 import QtCore, QtGui, uic, QtWidgets
 import spatial
-import volume_tfsetup
+import single
 import info
 
 class DicomViewerApp(QtWidgets.QMainWindow):
@@ -21,13 +21,28 @@ class DicomViewerApp(QtWidgets.QMainWindow):
         self.ui = v2_ui.Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.vtk_widget = DicomViewer(self.ui.vtk_panel)
+        self.vtk_widget = axial(self.ui.vtk_panel)
+        #self.vtk_widget = DicomViewer(self.ui.vtk_panel)
+        #self.vtk_widget = single.SingleView(self.ui.vtk_panel, "F:/MRI Brain Scan/Series 8")
+
         self.ui.vtk_layout = QtWidgets.QHBoxLayout()
         self.ui.vtk_layout.addWidget(self.vtk_widget)
         self.ui.vtk_layout.setContentsMargins(0,0,0,0)
         self.ui.vtk_panel.setLayout(self.ui.vtk_layout)
-        self.ui.ReadBtn.clicked.connect(self.setExistingDirectory)
 
+        self.ui.ReadBtn.clicked.connect(self.setExistingDirectory)
+        self.ui.GenerateBtn.clicked.connect(self.generate3d)
+        self.ui.SingleBtn.clicked.connect(self.singleview)
+
+        self.createActions()
+        self.ui.menuInfo.addAction(self.aboutAct)
+        self.ui.menuHelp.addAction(self.aboutQtAct)
+
+
+        self.ui.checkBox_inside.setChecked(True)
+        self.buttongroup = QtWidgets.QButtonGroup()
+        self.buttongroup.addButton(self.ui.checkBox_skin,2)
+        self.buttongroup.addButton(self.ui.checkBox_inside, 1)
         #self.ui.threshold_slider.setValue(50)
    #     self.ui.threshold_slider.valueChanged.connect(self.vtk_widget.set_threshold)
     #    self.vtk_widget.arrow_picked.connect(self.update_magnitude)
@@ -37,16 +52,52 @@ class DicomViewerApp(QtWidgets.QMainWindow):
 
     def setExistingDirectory(self):
         global path
+        path = 'null'
         path = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory"))
         self.ui.patient_label.setText(info.DicInfo(path).patientname + "\n" + info.DicInfo(path).patientid
                                       + "\n" + info.DicInfo(path).modality + "\n" + info.DicInfo(path).studydate
                                       + "\n" + info.DicInfo(path).pixeldata + "\n" + info.DicInfo(path).pixelspacing)
 
 
+    def generate3d(self):
+        toggle = self.buttongroup.checkedId()
+        self.projection = spatial.Model(path,toggle)
+
+    def singleview(self):
+        print('clicked')
+        self.vtk_widget.close()
+        #self.new_widget = DicomViewer(self.ui.vtk_layout)
+       # self.ui.vtk_layout.addWidget(self.new_widget)
+      #  self.new_widget = single.SingleView(self.ui.vtk_panel,path)
+       # self.ui.vtk_layout.addWidget(self.new_widget)
+        #self.ui.vtk_layout.update()
+        #self.new_widget.start()
+
+        # self.vtk_widget = single.SingleView(path,self.ui)
+       # self.ui.vtk_layout.addWidget(self.vtk_widget)
+       # self.vtk_widget.start()
+
+    def createActions(self):
+        self.aboutAct = QtWidgets.QAction("&Info", self,
+                statusTip ="Show the application's Info box",
+                triggered =self.about)
+
+        self.aboutQtAct = QtWidgets.QAction("About &Qt", self,
+                statusTip= "Show the Qt library's About box",
+                triggered= QtWidgets.qApp.aboutQt)
+
+    def about(self):
+         QtWidgets.QMessageBox.about(self, "About Application",
+                                "The <b>Application</b> was made to manage dicom datasets "
+                                "using different way of views and 3d visualisation. "
+                                "This is beta version")
+
+
+
+
 
 
 class DicomViewer(QtWidgets.QWidget):
-    #arrow_picked = QtCore.pyqtSignal(float)
 
 
     def __init__(self, parent):
@@ -84,28 +135,24 @@ class DicomViewer(QtWidgets.QWidget):
 
         self.interactor = interactor
         self.renderer = renderer
-        self.interactor = interactor
+
 
     def start(self):
         self.interactor.Initialize()
         self.interactor.Start()
+        #self.interactor.AddObserver(vtk.vtkCommand.LeftButtonPressEvent, self.click_to_pick, 10)
 
+class axial(QtWidgets.QLabel):
+    def __init__(self, parent):
+        super(axial,self).__init__(parent)
 
-    def set_threshold(self, new_value):
-        float_value = new_value/100.0
-        print(float_value)
-        self.threshold.ThresholdByUpper(float_value)
-        self.render_window.Render()
+        self.layout = QtWidgets.QHBoxLayout()
+        self.layout.setContentsMargins(0,0,0,0)
+        self.setLayout(self.layout)
 
-    def process_pick(self, object, event):
-        point_id = object.GetPointId()
-        if point_id >= 0:
-            vector_magnitude = self.glyphs.GetOutput().GetPointData().GetScalars().GetTuple(point_id)
-            self.arrow_picked.emit(vector_magnitude[0])
+        self.pixmap = QtGui.QPixmap('mri.jpg')
+        self.setPixmap(self.pixmap)
 
-    def click_to_pick(self, object, event):
-        x, y = object.GetEventPosition()
-        self.picker.Pick(x,y,0, self.renderer)
 
 
 if __name__ == "__main__":
@@ -113,5 +160,5 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication([])
     main_window = DicomViewerApp()
     main_window.show()
-    main_window.initialize()
+    #main_window.initialize()
     app.exec_()

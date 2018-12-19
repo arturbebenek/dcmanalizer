@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/dcmnew.iml" filepath="$PROJECT_DIR$/.idea/dcmnew.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../dicomreader/.idea/dicomreader.iml" filepath="$PROJECT_DIR$/../dicomreader/.idea/dicomreader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../tutorial-vtk-pyqt-master/.idea/tutorial-vtk-pyqt-master.iml" filepath="$PROJECT_DIR$/../tutorial-vtk-pyqt-master/.idea/tutorial-vtk-pyqt-master.iml" />
     </modules>
   </component>
 </project>

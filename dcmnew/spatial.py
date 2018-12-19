@@ -9,7 +9,7 @@ from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 class Model(Qt.QMainWindow):
 
-        def __init__(self, path, parent = None):
+        def __init__(self, path, toggle, parent = None):
             Qt.QMainWindow.__init__(self, parent)
 
             self.frame = Qt.QFrame()
@@ -24,7 +24,7 @@ class Model(Qt.QMainWindow):
             reader = vtk.vtkDICOMImageReader()
             reader.SetDirectoryName(path + "/")
 
-            volumeMapper = vtk.vtkOpenGLGPUVolumeRayCastMapper()
+            volumeMapper = vtk.vtkGPUVolumeRayCastMapper()
             volumeMapper.SetInputConnection(reader.GetOutputPort())
             volumeMapper.SetBlendModeToComposite()
 
@@ -32,8 +32,10 @@ class Model(Qt.QMainWindow):
             volumeScalarOpacity = vtk.vtkPiecewiseFunction()
             volumeGradientOpacity = vtk.vtkPiecewiseFunction()
 
-            volume_tfsetup.brxtraction(volumeColor,volumeScalarOpacity,volumeGradientOpacity)
-            #volume_tfsetup.skinextraction(volumeColor,volumeScalarOpacity,volumeGradientOpacity)
+            if toggle == 1:
+                volume_tfsetup.brxtraction(volumeColor,volumeScalarOpacity,volumeGradientOpacity)
+            else:
+                volume_tfsetup.skinextraction(volumeColor,volumeScalarOpacity,volumeGradientOpacity)
 
             volumeProperty = vtk.vtkVolumeProperty()
             volumeProperty.SetColor(volumeColor)
