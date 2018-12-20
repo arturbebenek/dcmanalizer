@@ -36,7 +36,7 @@ for filenameDCM in lstFilesDCM:
     ArrayDicom[:, :, lstFilesDCM.index(filenameDCM)] = ds.pixel_array
 
 
-pyplot.figure(dpi=300)
+pyplot.figure(dpi=256)
 pyplot.axes().set_aspect('equal', 'datalim')
 pyplot.set_cmap(pyplot.gray())
 ax = pyplot.pcolormesh(x, y, numpy.flipud(ArrayDicom[:, :, 20]))

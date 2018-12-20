@@ -1,5 +1,6 @@
 from __future__ import print_function
 import os
+import sys
 import vtk
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from PyQt5 import QtCore, QtGui, uic, QtWidgets
@@ -52,12 +53,25 @@ class DicomViewerApp(QtWidgets.QMainWindow):
 
     def setExistingDirectory(self):
         global path
-        path = 'null'
         path = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory"))
-        self.ui.patient_label.setText(info.DicInfo(path).patientname + "\n" + info.DicInfo(path).patientid
+        if path == '':
+            sys.exit()
+        filelist = os.listdir(path)
+        for a in range(0,len(filelist)):
+            if filelist[a].endswith('.dcm') == True:
+                self.ui.patient_label.setText(info.DicInfo(path).patientname + "\n" + info.DicInfo(path).patientid
                                       + "\n" + info.DicInfo(path).modality + "\n" + info.DicInfo(path).studydate
                                       + "\n" + info.DicInfo(path).pixeldata + "\n" + info.DicInfo(path).pixelspacing)
+            else:
+                self.errorhandler()
 
+    def errorhandler(self):
+        loadhandle = QtWidgets.QMessageBox.question(self, 'ERROR', "No valid format, select directory only with .dcm files, "
+                                                                   "try again?",QtWidgets.QMessageBox.No|QtWidgets.QMessageBox.Yes)
+        if loadhandle == QtWidgets.QMessageBox.Yes:
+            self.setExistingDirectory()
+        else:
+            sys.exit()
 
     def generate3d(self):
         toggle = self.buttongroup.checkedId()
@@ -66,6 +80,7 @@ class DicomViewerApp(QtWidgets.QMainWindow):
     def singleview(self):
         print('clicked')
         self.vtk_widget.close()
+
         #self.new_widget = DicomViewer(self.ui.vtk_layout)
        # self.ui.vtk_layout.addWidget(self.new_widget)
       #  self.new_widget = single.SingleView(self.ui.vtk_panel,path)
