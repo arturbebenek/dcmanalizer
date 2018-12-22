@@ -80,14 +80,18 @@ class DicomViewerApp(QtWidgets.QMainWindow):
     def singleview(self):
         print('clicked')
         self.vtk_widget.close()
+        #self.vtk_widget.setParent(None)
 
-        #self.new_widget = DicomViewer(self.ui.vtk_layout)
+        self.ui.vtk_panel.update()
+        self.new_widget = DicomViewer(self.ui.vtk_panel)
+        self.new_widget.start()
+        self.ui.vtk_layout.addWidget(self.new_widget)
        # self.ui.vtk_layout.addWidget(self.new_widget)
       #  self.new_widget = single.SingleView(self.ui.vtk_panel,path)
        # self.ui.vtk_layout.addWidget(self.new_widget)
-        #self.ui.vtk_layout.update()
-        #self.new_widget.start()
 
+
+        self.ui.vtk_layout.update()
         # self.vtk_widget = single.SingleView(path,self.ui)
        # self.ui.vtk_layout.addWidget(self.vtk_widget)
        # self.vtk_widget.start()
@@ -106,9 +110,6 @@ class DicomViewerApp(QtWidgets.QMainWindow):
                                 "The <b>Application</b> was made to manage dicom datasets "
                                 "using different way of views and 3d visualisation. "
                                 "This is beta version")
-
-
-
 
 
 
