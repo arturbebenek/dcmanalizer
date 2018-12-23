@@ -5,6 +5,7 @@ import vtk
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from PyQt5 import QtCore, QtGui, uic, QtWidgets
 import spatial
+import spatial2
 import single
 import info
 
@@ -34,6 +35,7 @@ class DicomViewerApp(QtWidgets.QMainWindow):
         self.ui.ReadBtn.clicked.connect(self.setExistingDirectory)
         self.ui.GenerateBtn.clicked.connect(self.generate3d)
         self.ui.SingleBtn.clicked.connect(self.singleview)
+        self.ui.MultiBtn.clicked.connect(self.multiView)
 
         self.createActions()
         self.ui.menuInfo.addAction(self.aboutAct)
@@ -42,7 +44,7 @@ class DicomViewerApp(QtWidgets.QMainWindow):
 
         self.ui.checkBox_inside.setChecked(True)
         self.buttongroup = QtWidgets.QButtonGroup()
-        self.buttongroup.addButton(self.ui.checkBox_skin,2)
+        self.buttongroup.addButton(self.ui.checkBox_skin, 2)
         self.buttongroup.addButton(self.ui.checkBox_inside, 1)
         #self.ui.threshold_slider.setValue(50)
    #     self.ui.threshold_slider.valueChanged.connect(self.vtk_widget.set_threshold)
@@ -75,17 +77,26 @@ class DicomViewerApp(QtWidgets.QMainWindow):
 
     def generate3d(self):
         toggle = self.buttongroup.checkedId()
-        self.projection = spatial.Model(path,toggle)
+#        self.projection = spatial.Model(path,toggle)
+
+        self.vtk_widget.close()
+        self.vtk_widget.destroy()
+        self.vtk_widget = spatial2.Model(path, toggle, self.ui.vtk_panel)
+        self.vtk_widget.start()
+        self.ui.vtk_layout.addWidget(self.vtk_widget)
+        self.ui.vtk_layout.update()
 
     def singleview(self):
         print('clicked')
         self.vtk_widget.close()
-        #self.vtk_widget.setParent(None)
+        self.vtk_widget.destroy()
+       # self.vtk_widget.setParent(None)
 
         self.ui.vtk_panel.update()
-        self.new_widget = DicomViewer(self.ui.vtk_panel)
-        self.new_widget.start()
-        self.ui.vtk_layout.addWidget(self.new_widget)
+        #self.vtk_widget = DicomViewer(self.ui.vtk_panel)
+        self.vtk_widget = single.SingleView(self.ui.vtk_panel, path)
+        self.vtk_widget.start()
+        self.ui.vtk_layout.addWidget(self.vtk_widget)
        # self.ui.vtk_layout.addWidget(self.new_widget)
       #  self.new_widget = single.SingleView(self.ui.vtk_panel,path)
        # self.ui.vtk_layout.addWidget(self.new_widget)
@@ -95,6 +106,14 @@ class DicomViewerApp(QtWidgets.QMainWindow):
         # self.vtk_widget = single.SingleView(path,self.ui)
        # self.ui.vtk_layout.addWidget(self.vtk_widget)
        # self.vtk_widget.start()
+
+    def multiView(self):
+        self.vtk_widget.close()
+        self.vtk_widget.destroy()
+       # self.vtk_widget.setParent(None)
+        self.vtk_widget = axial(self.ui.vtk_panel)
+        self.ui.vtk_layout.addWidget(self.vtk_widget)
+        self.ui.vtk_layout.update()
 
     def createActions(self):
         self.aboutAct = QtWidgets.QAction("&Info", self,

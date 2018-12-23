@@ -1,5 +1,6 @@
 import vtk
-from PySide2 import QtWidgets,QtCore,QtGui
+#from PySide2 import QtWidgets,QtCore,QtGui
+from PyQt5 import QtWidgets,QtCore
 
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
@@ -14,6 +15,14 @@ class SingleView(QtWidgets.QWidget):
         self.layout.addWidget(interactor)
         self.layout.setContentsMargins(0,0,0,0)
         self.setLayout(self.layout)
+
+        # Setup VTK environment
+        renderer = vtk.vtkRenderer()
+        render_window = interactor.GetRenderWindow()
+        render_window.AddRenderer(renderer)
+
+        interactor.SetInteractorStyle(vtk.vtkInteractorStyleImage())
+        render_window.SetInteractor(interactor)
 
         #add to vtk
         reader = vtk.vtkDICOMImageReader()
@@ -64,7 +73,7 @@ class SingleView(QtWidgets.QWidget):
         reslice = vtk.vtkImageReslice()
         reslice.SetInputConnection(reader.GetOutputPort())
         reslice.SetOutputDimensionality(2)
-        reslice.SetResliceAxes(axial)
+        reslice.SetResliceAxes(sagittal)
         reslice.SetInterpolationModeToLinear()
 
 #        Create a greyscale lookup table
@@ -83,22 +92,16 @@ class SingleView(QtWidgets.QWidget):
         # Display the image
         actor = vtk.vtkImageActor()
         actor.GetMapper().SetInputConnection(color.GetOutputPort())
-
-        renderer = vtk.vtkRenderer()
         renderer.AddActor(actor)
-
-        window = vtk.vtkRenderWindow()
-        window.AddRenderer(renderer)
 
         # Set up the interaction
         interactorStyle = vtk.vtkInteractorStyleImage()
-        interactor = vtk.vtkRenderWindowInteractor()
         interactor.SetInteractorStyle(interactorStyle)
 
         self.interactor = interactor
         self.renderer = renderer
 
     def start(self):
-       self.interactor.Initialize()
+  #     self.interactor.Initialize()
        self.interactor.Start()
 
