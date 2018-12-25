@@ -37,6 +37,11 @@ class DicomViewerApp(QtWidgets.QMainWindow):
         self.ui.SingleBtn.clicked.connect(self.singleview)
         self.ui.MultiBtn.clicked.connect(self.multiView)
 
+
+        self.ui.horizontalScrollBar.setValue(50)
+        self.ui.horizontalScrollBar.update()
+        self.ui.horizontalScrollBar.valueChanged.connect(self.dcmchange)
+
         self.createActions()
         self.ui.menuInfo.addAction(self.aboutAct)
         self.ui.menuHelp.addAction(self.aboutQtAct)
@@ -94,26 +99,51 @@ class DicomViewerApp(QtWidgets.QMainWindow):
 
         self.ui.vtk_panel.update()
         #self.vtk_widget = DicomViewer(self.ui.vtk_panel)
-        self.vtk_widget = single.SingleView(self.ui.vtk_panel, path)
+        self.vtk_widget = single.SingleView(self.ui.vtk_panel, path, 'axial')
         self.vtk_widget.start()
         self.ui.vtk_layout.addWidget(self.vtk_widget)
        # self.ui.vtk_layout.addWidget(self.new_widget)
       #  self.new_widget = single.SingleView(self.ui.vtk_panel,path)
        # self.ui.vtk_layout.addWidget(self.new_widget)
-
-
         self.ui.vtk_layout.update()
+        #self.ui.horizontalScrollBar.setMinimum = 0;
+        #self.ui.horizontalScrollBar.setMaximum = len(info.DicInfo.filelist)
         # self.vtk_widget = single.SingleView(path,self.ui)
        # self.ui.vtk_layout.addWidget(self.vtk_widget)
        # self.vtk_widget.start()
+        self.adjustslider()
+      #  self.typeofwiev = "single"
 
     def multiView(self):
         self.vtk_widget.close()
         self.vtk_widget.destroy()
        # self.vtk_widget.setParent(None)
-        self.vtk_widget = axial(self.ui.vtk_panel)
+        self.ui.vtk_panel.update()
+
+        self.axial = single.SingleView(self.vtk_widget, path, 'axial')
+        self.axial.start()
+        self.sagit = single.SingleView(self.vtk_widget,path, 'sagittal')
+        self.sagit.start()
+        self.coron = single.SingleView(self.vtk_widget,path, 'coronal')
+        self.coron.start()
+        self.obliq = single.SingleView(self.vtk_widget,path, 'oblique')
+        self.obliq.start()
+
+        self.vtk_widget = QtWidgets.QGroupBox("Different views")
+        layout2 = QtWidgets.QGridLayout()
+        layout2.addWidget(self.axial,0,0)
+        layout2.addWidget(self.sagit,0,1)
+        layout2.addWidget(self.coron,1,0)
+        layout2.addWidget(self.obliq,1,1)
+
+        self.vtk_widget.setLayout(layout2)
+        self.vtk_widget.setParent(self.ui.vtk_panel)
         self.ui.vtk_layout.addWidget(self.vtk_widget)
         self.ui.vtk_layout.update()
+        self.adjustslider()
+       # self.typeofwiev = "multi"
+
+
 
     def createActions(self):
         self.aboutAct = QtWidgets.QAction("&Info", self,
@@ -130,6 +160,18 @@ class DicomViewerApp(QtWidgets.QMainWindow):
                                 "using different way of views and 3d visualisation. "
                                 "This is beta version")
 
+    def adjustslider(self):
+        self.ui.horizontalScrollBar.setMinimum(0)
+        self.ui.horizontalScrollBar.setMaximum(len(info.DicInfo(path).filelist))
+        self.ui.horizontalScrollBar.setValue(len(info.DicInfo(path).filelist)/2)
+
+
+    def dcmchange(self, new_value):
+       # if self.typeofview == "single":
+        print(new_value)
+           # single.SingleView.slidercallback(new_value, self.old_value)
+     #   if self.typeofview == "multi":
+      #      print ("zmiana obrazka")
 
 
 class DicomViewer(QtWidgets.QWidget):

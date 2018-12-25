@@ -7,7 +7,7 @@ from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 class SingleView(QtWidgets.QWidget):
 
 
-    def __init__(self, parent, path):
+    def __init__(self, parent, path, type):
         super(SingleView,self).__init__(parent)
 
         interactor = QVTKRenderWindowInteractor(self)
@@ -73,7 +73,14 @@ class SingleView(QtWidgets.QWidget):
         reslice = vtk.vtkImageReslice()
         reslice.SetInputConnection(reader.GetOutputPort())
         reslice.SetOutputDimensionality(2)
-        reslice.SetResliceAxes(sagittal)
+        if type == 'axial':
+            reslice.SetResliceAxes(axial)
+        elif type == 'sagittal':
+            reslice.SetResliceAxes(sagittal)
+        elif type == 'coronal':
+            reslice.SetResliceAxes(coronal)
+        elif type == 'oblique':
+            reslice.SetResliceAxes(oblique)
         reslice.SetInterpolationModeToLinear()
 
 #        Create a greyscale lookup table
@@ -100,8 +107,21 @@ class SingleView(QtWidgets.QWidget):
 
         self.interactor = interactor
         self.renderer = renderer
+      #  self.reslice = reslice
 
     def start(self):
   #     self.interactor.Initialize()
        self.interactor.Start()
 
+#    def slidercallback(self,new_value,old_value):
+#        print('phot changed')
+#        deltaY = new_value - old_value
+#        self.reslice.Update()
+#        sliceSpacing = self.reslice.GetOutput().GetSpacing()[2]
+#        matrix = self.reslice.GetResliceAxes()
+#        # move the center point that we are slicing through
+#        center = matrix.MultiplyPoint((0, 0, sliceSpacing*deltaY, 1))
+#        matrix.SetElement(0, 3, center[0])
+#        matrix.SetElement(1, 3, center[1])
+#        matrix.SetElement(2, 3, center[2])
+#        self.interactor.Start()

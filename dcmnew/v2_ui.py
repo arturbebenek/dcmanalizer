@@ -46,7 +46,7 @@ class Ui_MainWindow(object):
         self.checkBox_inside = QtWidgets.QCheckBox(self.frame)
         self.checkBox_inside.setObjectName("checkBox_inside")
         self.verticalLayout.addWidget(self.checkBox_inside)
-        self.horizontalScrollBar = QtWidgets.QScrollBar(self.frame)
+        self.horizontalScrollBar = QtWidgets.QSlider(self.frame)
        # self.horizontalScrollBar.setGeometry(QtCore.QRect(30, 210, 211, 20))
         self.horizontalScrollBar.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalScrollBar.setObjectName("horizontalScrollBar")

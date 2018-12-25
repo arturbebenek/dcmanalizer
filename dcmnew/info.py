@@ -7,8 +7,8 @@ class DicInfo:
 
 
     def __init__(self, path):
-        filelist = glob.glob(path + "/*.dcm")
-        filename = filelist[0]
+        self.filelist = glob.glob(path + "/*.dcm")
+        filename = self.filelist[0]
         dataset = pydicom.dcmread(filename)
         self.patientsex = "Patient's sex: \n" + str(dataset.PatientSex)
         self.patientbirth="Patient's birt date: \n" + str(dataset.PatientBirthDate)
