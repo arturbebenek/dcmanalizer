@@ -76,8 +76,8 @@ class DicomViewerApp(QtWidgets.QMainWindow):
         self.adjustslider()
 
     def errorhandler(self):
-        loadhandle = QtWidgets.QMessageBox.question(self, 'ERROR', "No valid format, select directory only with .dcm files, "
-                                                                   "try again?",QtWidgets.QMessageBox.No|QtWidgets.QMessageBox.Yes)
+        loadhandle = QtWidgets.QMessageBox.question(self, 'ERROR', "Brak prawidłowego formatu, wybierz folder zawierający jedynie pliki z rozszerzeniem .dcm "
+                                                                   "Chcesz spróbować ponownie?",QtWidgets.QMessageBox.No|QtWidgets.QMessageBox.Yes)
         if loadhandle == QtWidgets.QMessageBox.Yes:
             self.setExistingDirectory()
         else:
@@ -95,16 +95,11 @@ class DicomViewerApp(QtWidgets.QMainWindow):
         self.ui.vtk_layout.update()
 
     def singleview(self):
-
-        print('clicked')
-       # global typeflag
         self.typeflag = 1
         self.vtk_widget.close()
         self.vtk_widget.destroy()
        # self.vtk_widget.setParent(None)
-
         self.ui.vtk_panel.update()
-        #self.vtk_widget = DicomViewer(self.ui.vtk_panel)
         self.vtk_widget = single2.SingleView(self.ui.vtk_panel, path, 'axial', self.dcmnumber, self.numofdcms)
         self.vtk_widget.start()
         self.ui.vtk_layout.addWidget(self.vtk_widget)
@@ -137,7 +132,7 @@ class DicomViewerApp(QtWidgets.QMainWindow):
         self.obliq = single2.SingleView(self.vtk_widget, path, 'oblique', self.dcmnumber, self.numofdcms)
         self.obliq.start()
 
-        self.vtk_widget = QtWidgets.QGroupBox("Different views")
+        self.vtk_widget = QtWidgets.QGroupBox("3 najważniejsze rzuty: ")
         layout2 = QtWidgets.QGridLayout()
         layout2.addWidget(self.axial,0,0)
         layout2.addWidget(self.sagit,0,1)
@@ -154,19 +149,19 @@ class DicomViewerApp(QtWidgets.QMainWindow):
 
 
     def createActions(self):
-        self.aboutAct = QtWidgets.QAction("&Info", self,
-                statusTip ="Show the application's Info box",
+        self.aboutAct = QtWidgets.QAction("&O aplikacji", self,
+                statusTip ="Pokazuje informacje o DicomViewer i jego autorze ",
                 triggered =self.about)
 
-        self.aboutQtAct = QtWidgets.QAction("About &Qt", self,
-                statusTip= "Show the Qt library's About box",
+        self.aboutQtAct = QtWidgets.QAction("Informacje dotyczące &Qt", self,
+                statusTip= "Pokazuje informacje o bibliotece wykorzystanej do tworzenia interfejsu",
                 triggered= QtWidgets.qApp.aboutQt)
 
     def about(self):
-         QtWidgets.QMessageBox.about(self, "About Application",
-                                "The <b>Application</b> was made to manage dicom datasets "
-                                "using different way of views and 3d visualisation. "
-                                "This is beta version")
+         QtWidgets.QMessageBox.about(self, "O aplikacji",
+                                "<b>DicomViewer</b> jest aplikacją stworzoną do zarządzaniem zbiorami plików typu dicom"
+                                "przy pomocy różnych widoków a także wizualizacji przestrzennej. Jest to projekt inżynierski,"
+                                " autorstwa Artura Bębenka")
 
     def adjustslider(self):
         self.ui.horizontalScrollBar.setMinimum(0)
