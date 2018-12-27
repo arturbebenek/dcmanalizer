@@ -84,7 +84,7 @@ oblique.DeepCopy((1, 0, 0, center[0],
 reslice = vtk.vtkImageReslice()
 reslice.SetInputConnection(reader.GetOutputPort())
 reslice.SetOutputDimensionality(2)
-reslice.SetResliceAxes(axial)
+reslice.SetResliceAxes(coronal)
 reslice.SetInterpolationModeToLinear()
 
 # Create a greyscale lookup table

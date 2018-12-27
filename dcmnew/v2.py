@@ -7,6 +7,7 @@ from PyQt5 import QtCore, QtGui, uic, QtWidgets
 import spatial
 import spatial2
 import single
+import single2
 import info
 
 class DicomViewerApp(QtWidgets.QMainWindow):
@@ -54,7 +55,7 @@ class DicomViewerApp(QtWidgets.QMainWindow):
         #self.ui.threshold_slider.setValue(50)
    #     self.ui.threshold_slider.valueChanged.connect(self.vtk_widget.set_threshold)
     #    self.vtk_widget.arrow_picked.connect(self.update_magnitude)
-
+        self.typeflag = 0
     def initialize(self):
         self.vtk_widget.start()
 
@@ -71,6 +72,8 @@ class DicomViewerApp(QtWidgets.QMainWindow):
                                       + "\n" + info.DicInfo(path).pixeldata + "\n" + info.DicInfo(path).pixelspacing)
             else:
                 self.errorhandler()
+
+        self.adjustslider()
 
     def errorhandler(self):
         loadhandle = QtWidgets.QMessageBox.question(self, 'ERROR', "No valid format, select directory only with .dcm files, "
@@ -92,14 +95,17 @@ class DicomViewerApp(QtWidgets.QMainWindow):
         self.ui.vtk_layout.update()
 
     def singleview(self):
+
         print('clicked')
+       # global typeflag
+        self.typeflag = 1
         self.vtk_widget.close()
         self.vtk_widget.destroy()
        # self.vtk_widget.setParent(None)
 
         self.ui.vtk_panel.update()
         #self.vtk_widget = DicomViewer(self.ui.vtk_panel)
-        self.vtk_widget = single.SingleView(self.ui.vtk_panel, path, 'axial')
+        self.vtk_widget = single2.SingleView(self.ui.vtk_panel, path, 'axial', self.dcmnumber, self.numofdcms)
         self.vtk_widget.start()
         self.ui.vtk_layout.addWidget(self.vtk_widget)
        # self.ui.vtk_layout.addWidget(self.new_widget)
@@ -111,22 +117,24 @@ class DicomViewerApp(QtWidgets.QMainWindow):
         # self.vtk_widget = single.SingleView(path,self.ui)
        # self.ui.vtk_layout.addWidget(self.vtk_widget)
        # self.vtk_widget.start()
-        self.adjustslider()
+
       #  self.typeofwiev = "single"
 
     def multiView(self):
+
+        self.typeflag = 2
         self.vtk_widget.close()
         self.vtk_widget.destroy()
        # self.vtk_widget.setParent(None)
         self.ui.vtk_panel.update()
 
-        self.axial = single.SingleView(self.vtk_widget, path, 'axial')
+        self.axial = single2.SingleView(self.vtk_widget, path, 'axial', self.dcmnumber, self.numofdcms)
         self.axial.start()
-        self.sagit = single.SingleView(self.vtk_widget,path, 'sagittal')
+        self.sagit = single2.SingleView(self.vtk_widget, path, 'sagittal', self.dcmnumber, self.numofdcms)
         self.sagit.start()
-        self.coron = single.SingleView(self.vtk_widget,path, 'coronal')
+        self.coron = single2.SingleView(self.vtk_widget, path, 'coronal', self.dcmnumber, self.numofdcms)
         self.coron.start()
-        self.obliq = single.SingleView(self.vtk_widget,path, 'oblique')
+        self.obliq = single2.SingleView(self.vtk_widget, path, 'oblique', self.dcmnumber, self.numofdcms)
         self.obliq.start()
 
         self.vtk_widget = QtWidgets.QGroupBox("Different views")
@@ -140,7 +148,7 @@ class DicomViewerApp(QtWidgets.QMainWindow):
         self.vtk_widget.setParent(self.ui.vtk_panel)
         self.ui.vtk_layout.addWidget(self.vtk_widget)
         self.ui.vtk_layout.update()
-        self.adjustslider()
+       #self.adjustslider()
        # self.typeofwiev = "multi"
 
 
@@ -164,11 +172,19 @@ class DicomViewerApp(QtWidgets.QMainWindow):
         self.ui.horizontalScrollBar.setMinimum(0)
         self.ui.horizontalScrollBar.setMaximum(len(info.DicInfo(path).filelist))
         self.ui.horizontalScrollBar.setValue(len(info.DicInfo(path).filelist)/2)
-
+        self.numofdcms = len(info.DicInfo(path).filelist)
+        self.dcmnumber = self.ui.horizontalScrollBar.value()
 
     def dcmchange(self, new_value):
-       # if self.typeofview == "single":
-        print(new_value)
+        #print(new_value)
+        if (self.typeflag != 0):
+    #        print(self.typeflag)
+            self.dcmnumber = new_value
+        if (self.typeflag == 1):
+            self.singleview()
+        elif (self.typeflag == 2):
+            self.multiView()
+
            # single.SingleView.slidercallback(new_value, self.old_value)
      #   if self.typeofview == "multi":
       #      print ("zmiana obrazka")
